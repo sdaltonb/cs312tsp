@@ -342,7 +342,7 @@ namespace TSP
         {
             Random rand = new Random();
             //loop through each combination of parents
-            for (int i = 0; i < parents.Count; i++)
+            for (int i = 0; i < parents.Count - 1; i++)
             {
                 for (int j = i + 1; j < parents.Count; j++)
                 {
@@ -456,6 +456,42 @@ namespace TSP
             // do a refresh. 
             Program.MainForm.Invalidate();
         }
+
+        //I'm thinking we can call this in the random method and in initializePopulation to avoid code duplication
+        private TSPSolution getRandomRoute()
+        {
+            TSPSolution randomRoute;
+            List<Node> nodes;
+            Node n;
+            bool invalid = true;
+            do
+            {
+                nodes = new List<Node>();
+                foreach (City city in Cities)
+                {
+                    nodes.Add(new Node(city));
+                }
+                Route = new ArrayList();
+                n = nodes[0];
+                Route.Add(n.getCity());
+                nodes.Remove(n);
+                while (Route.Count < Cities.Length)
+                {
+                    n.visit();
+                    int i = new Random().Next(nodes.Count);
+                    n = nodes[i];
+                    Route.Add(n.getCity());
+                    nodes.Remove(n);
+                }
+                randomRoute = new TSPSolution(Route);
+                if (randomRoute.costOfRoute() < Double.MaxValue)
+                {
+                    invalid = false;
+                }
+            } while (invalid);
+            return randomRoute;
+        }
+
         #endregion
 
         public class Node
