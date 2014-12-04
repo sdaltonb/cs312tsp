@@ -301,6 +301,56 @@ namespace TSP
             Program.MainForm.Invalidate();
         }
 
+        public void genetic()
+        {
+            uint timesToRun = 4000;
+            uint n = (uint)Cities.Length;
+            uint populationSize = 1 + (uint)(Math.Sqrt(1 + 2 * n) / 2);
+
+            List<ArrayList> routes = initializePopulation(n);
+
+            Queue<ArrayList> queue = evaluate(routes);
+
+            for (int cycle = 0; cycle < timesToRun; ++cycle)
+            {
+                List<ArrayList> parents = selection(queue);
+
+                queue.Clear();
+
+                crossover(parents, queue);
+
+                compare();
+            }
+        }
+
+        private List<ArrayList> initializePopulation(uint problemSize)
+        {
+            return new List<ArrayList>();
+        }
+
+        private Queue<ArrayList> evaluate(List<ArrayList> routes)
+        {
+            return new Queue<ArrayList>();
+        }
+
+        private List<ArrayList> selection(Queue<ArrayList> queue)
+        {
+            return new List<ArrayList>();
+        }
+
+        private void crossover(List<ArrayList> parents, Queue<ArrayList> queue)
+        {
+            mutate();
+        }
+
+        private void mutate()
+        {
+        }
+
+        private void compare()
+        {
+        }
+
         public void greedy()
         {
             List<Node> nodes = new List<Node>();
