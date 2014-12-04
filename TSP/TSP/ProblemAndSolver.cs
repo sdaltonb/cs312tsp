@@ -325,6 +325,14 @@ namespace TSP
 
         private List<ArrayList> initializePopulation(uint problemSize)
         {
+            //something like this?
+            //List<ArrayList> population = new List<ArrayList>();
+            //for (int i = 0; i < problemSize; i++)
+            //{
+            //    population.Add(getRandomRoute().Route);
+            //}
+            //return population;
+
             return new List<ArrayList>();
         }
 
@@ -409,47 +417,49 @@ namespace TSP
 
         public void random()
         {
-            List<Node> nodes = new List<Node>();
-            foreach (City city in Cities)
-            {
-                nodes.Add(new Node(city));
-            }
+            //List<Node> nodes = new List<Node>();
+            //foreach (City city in Cities)
+            //{
+            //    nodes.Add(new Node(city));
+            //}
 
-            Route = new ArrayList();
-            Node n = nodes[0];
+            //Route = new ArrayList();
+            //Node n = nodes[0];
 
-            nodes.Remove(n);
-            Route.Add(n.getCity());
-            bool invalid = true;
-            while (invalid)
-            {
-                while (Route.Count < Cities.Length)
-                {
-                    n.visit();
-                    int i = new Random().Next(nodes.Count);
-                    n = nodes[i];
-                    Route.Add(n.getCity());
-                    nodes.Remove(n);
-                }
-                // call this the best solution so far.  bssf is the route that will be drawn by the Draw method. 
-                bssf = new TSPSolution(Route);
-                if (bssf.costOfRoute() < Double.MaxValue)
-                {
-                    invalid = false;
-                }
-                else
-                {
-                    nodes = new List<Node>();
-                    foreach (City city in Cities)
-                    {
-                        nodes.Add(new Node(city));
-                    }
-                    Route = new ArrayList();
-                    Route.Add(n.getCity());
-                    n = nodes[0];
-                    nodes.Remove(n);
-                }
-            }
+            //nodes.Remove(n);
+            //Route.Add(n.getCity());
+            //bool invalid = true;
+            //while (invalid)
+            //{
+            //    while (Route.Count < Cities.Length)
+            //    {
+            //        n.visit();
+            //        int i = new Random().Next(nodes.Count);
+            //        n = nodes[i];
+            //        Route.Add(n.getCity());
+            //        nodes.Remove(n);
+            //    }
+            //    // call this the best solution so far.  bssf is the route that will be drawn by the Draw method. 
+            //    bssf = new TSPSolution(Route);
+            //    if (bssf.costOfRoute() < Double.MaxValue)
+            //    {
+            //        invalid = false;
+            //    }
+            //    else
+            //    {
+            //        nodes = new List<Node>();
+            //        foreach (City city in Cities)
+            //        {
+            //            nodes.Add(new Node(city));
+            //        }
+            //        Route = new ArrayList();
+            //        Route.Add(n.getCity());
+            //        n = nodes[0];
+            //        nodes.Remove(n);
+            //    }
+            //}
+
+            bssf = getRandomRoute();
 
             // update the cost of the tour. 
             Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
