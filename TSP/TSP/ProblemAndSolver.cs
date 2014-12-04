@@ -313,7 +313,7 @@ namespace TSP
 
             for (int cycle = 0; cycle < timesToRun; ++cycle)
             {
-                List<ArrayList> parents = selection(queue);
+                List<ArrayList> parents = selection(queue, populationSize);
 
                 queue.Clear();
 
@@ -333,13 +333,33 @@ namespace TSP
             return new Queue<ArrayList>();
         }
 
-        private List<ArrayList> selection(Queue<ArrayList> queue)
+        private List<ArrayList> selection(Queue<ArrayList> queue, uint populationSize)
         {
             return new List<ArrayList>();
         }
 
         private void crossover(List<ArrayList> parents, Queue<ArrayList> queue)
         {
+            Random rand = new Random();
+            //loop through each combination of parents
+            for (int i = 0; i < parents.Count; i++)
+            {
+                for (int j = i + 1; j < parents.Count; j++)
+                {
+                    //cross i and j
+                    //random number that splits at least one city for crossover
+                    int split = rand.Next(Cities.Length - 2) + 1;
+
+                    ArrayList child1 = new ArrayList(parents[i].GetRange(0, split));
+                    child1.AddRange(parents[j].GetRange(split, Cities.Length - split));
+                    queue.Enqueue(child1);
+
+                    ArrayList child2 = new ArrayList(parents[j].GetRange(0, split));
+                    child2.AddRange(parents[i].GetRange(split, Cities.Length - split));
+                    queue.Enqueue(child2);
+                }
+            }
+
             mutate();
         }
 
