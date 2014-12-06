@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 
 namespace TSP
 {
@@ -19,9 +19,17 @@ namespace TSP
         public ArrayList
             Route;
 
+        private double length;
+
         public TSPSolution(ArrayList iroute)
         {
             Route = new ArrayList(iroute);
+            length = costOfRoute();
+        }
+
+        public double getLength()
+        {
+            return length;
         }
 
 

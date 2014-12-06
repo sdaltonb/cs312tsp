@@ -260,17 +260,17 @@ namespace TSP
         {
             uint timesToRun = 4000;
             uint n = (uint)Cities.Length;
-            uint populationSize = 1 + (uint)(Math.Sqrt(1 + 2 * n) / 2);
+            uint populationSize = 1 + (uint)(Math.Sqrt(1 + 8 * n) / 2);
 
             List<ArrayList> routes = initializePopulation(n);
 
-            Queue<ArrayList> queue = evaluate(routes);
+            PriorityQueue queue = evaluate(routes);
 
             for (int cycle = 0; cycle < timesToRun; ++cycle)
             {
-                List<ArrayList> parents = selection(queue, populationSize);
+                TSPSolution[] parents = selection(queue, populationSize);
 
-                queue.Clear();
+                queue.clear();
 
                 crossover(parents, queue);
 
@@ -291,43 +291,58 @@ namespace TSP
             return new List<ArrayList>();
         }
 
-        private Queue<ArrayList> evaluate(List<ArrayList> routes)
+        private PriorityQueue evaluate(List<ArrayList> routes)
         {
-            return new Queue<ArrayList>();
+            return new PriorityQueue((uint)routes.Count);
         }
 
-        private List<ArrayList> selection(Queue<ArrayList> queue, uint populationSize)
+        private TSPSolution[] selection(PriorityQueue queue, uint populationSize)
         {
-            return new List<ArrayList>();
+            return new TSPSolution[populationSize];
         }
 
-        private void crossover(List<ArrayList> parents, Queue<ArrayList> queue)
+        private void crossover(TSPSolution[] parents, PriorityQueue queue)
         {
             Random rand = new Random();
+
+            //20% mutation rate - we can change this to whatever we want
+            int probabilityTotal = 100;
+            int mutationRate = 20;
+
             //loop through each combination of parents
-            for (int i = 0; i < parents.Count - 1; i++)
+            for (int i = 0; i < parents.Length - 1; i++)
             {
-                for (int j = i + 1; j < parents.Count; j++)
+                for (int j = i + 1; j < parents.Length; j++)
                 {
                     //cross i and j
                     //random number that splits at least one city for crossover
                     int split = rand.Next(Cities.Length - 2) + 1;
 
-                    ArrayList child1 = new ArrayList(parents[i].GetRange(0, split));
-                    child1.AddRange(parents[j].GetRange(split, Cities.Length - split));
-                    queue.Enqueue(child1);
+                    ArrayList child1 = new ArrayList(parents[i].Route.GetRange(0, split));
+                    child1.AddRange(parents[j].Route.GetRange(split, Cities.Length - split));
+                    if (rand.Next(probabilityTotal) < mutationRate) {
+                        mutate(child1, rand);
+                    }
+                    queue.push(new TSPSolution(child1));
 
-                    ArrayList child2 = new ArrayList(parents[j].GetRange(0, split));
-                    child2.AddRange(parents[i].GetRange(split, Cities.Length - split));
-                    queue.Enqueue(child2);
+                    ArrayList child2 = new ArrayList(parents[j].Route.GetRange(0, split));
+                    child2.AddRange(parents[i].Route.GetRange(split, Cities.Length - split));
+                    if (rand.Next(probabilityTotal) < mutationRate)
+                    {
+                        mutate(child2, rand);
+                    }
+                    queue.push(new TSPSolution(child2));
                 }
             }
-
-            mutate();
         }
 
-        private void mutate()
+        private void mutate(ArrayList child, Random rand)
         {
+            int swap1 = rand.Next(child.Count);
+            int swap2 = rand.Next(child.Count);
+            Object temp = child[swap1];
+            child[swap1] = child[swap2];
+            child[swap2] = temp;
         }
 
         private void compare()
@@ -428,6 +443,7 @@ namespace TSP
             TSPSolution randomRoute;
             List<Node> nodes;
             Node n;
+            Random rand = new Random();
             bool invalid = true;
             do
             {
@@ -443,7 +459,7 @@ namespace TSP
                 while (Route.Count < Cities.Length)
                 {
                     n.visit();
-                    int i = new Random().Next(nodes.Count);
+                    int i = rand.Next(nodes.Count);
                     n = nodes[i];
                     Route.Add(n.getCity());
                     nodes.Remove(n);
