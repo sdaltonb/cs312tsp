@@ -59,14 +59,39 @@ namespace TSP
                 return;
             }
 
-            if (solutions[(int)index].costOfRoute() < solutions[(int)index / 2].costOfRoute())
+            if (solutions[(int)index].costOfRoute() < solutions[(int)(index - 1) / 2].costOfRoute())
             {
-                percolateUp(index / 2);
+                percolateUp((index - 1)/ 2);
             }
         }
 
         private void percolateDown(uint siftingIndex)
         {
+            uint minimumIndex;
+            uint leftChildIndex = (siftingIndex * 2) + 1;
+            uint rightChildIndex = (siftingIndex + 1) * 2;
+
+            if (rightChildIndex < lastIndex)
+            {
+                minimumIndex = solutions[rightChildIndex].costOfRoute() < solutions[leftChildIndex].costOfRoute() ? rightChildIndex : leftChildIndex;
+            }
+            else if (leftChildIndex < lastIndex)
+            {
+                minimumIndex = leftChildIndex;
+            }
+            else
+            {
+                return;
+            }
+
+            if (solutions[siftingIndex].costOfRoute() > solutions[minimumIndex].costOfRoute())
+            {
+                TSPSolution temp = solutions[siftingIndex];
+                solutions[siftingIndex] = solutions[minimumIndex];
+                solutions[minimumIndex] = temp;
+
+                percolateDown(minimumIndex);
+            }
         }
     }
 }
