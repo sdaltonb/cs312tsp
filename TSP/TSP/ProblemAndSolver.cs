@@ -298,7 +298,29 @@ namespace TSP
 
         private TSPSolution[] selection(PriorityQueue queue, uint populationSize)
         {
-            return new TSPSolution[populationSize];
+            Random r = new Random();
+            double probability = 1 - 1 / populationSize;
+            TSPSolution[] solutions = new TSPSolution[populationSize];
+            int index = 0;
+            while (index < populationSize)
+            {
+                if (populationSize - index == queue.getSize())
+                {
+                    uint queueSize = queue.getSize();
+                    for (uint i = 0; i < queueSize; i++)
+                    {
+                        solutions[index++] = queue.pop();
+                    }
+                }
+                else
+                {
+                    if (r.NextDouble() < probability)
+                    {
+                        solutions[index++] = queue.pop();
+                    }
+                }
+            }
+            return solutions;
         }
 
         private void crossover(TSPSolution[] parents, PriorityQueue queue)
