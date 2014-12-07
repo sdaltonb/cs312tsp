@@ -59,7 +59,7 @@ namespace TSP
                 return;
             }
 
-            if (solutions[(int)index].costOfRoute() < solutions[(int)(index - 1) / 2].costOfRoute())
+            if (solutions[(int)index].getLength() < solutions[(int)(index - 1) / 2].getLength())
             {
                 percolateUp((index - 1)/ 2);
             }
@@ -73,7 +73,7 @@ namespace TSP
 
             if (rightChildIndex < lastIndex)
             {
-                minimumIndex = solutions[rightChildIndex].costOfRoute() < solutions[leftChildIndex].costOfRoute() ? rightChildIndex : leftChildIndex;
+                minimumIndex = solutions[rightChildIndex].getLength() < solutions[leftChildIndex].getLength() ? rightChildIndex : leftChildIndex;
             }
             else if (leftChildIndex < lastIndex)
             {
@@ -84,7 +84,7 @@ namespace TSP
                 return;
             }
 
-            if (solutions[siftingIndex].costOfRoute() > solutions[minimumIndex].costOfRoute())
+            if (solutions[siftingIndex].getLength() > solutions[minimumIndex].getLength())
             {
                 TSPSolution temp = solutions[siftingIndex];
                 solutions[siftingIndex] = solutions[minimumIndex];

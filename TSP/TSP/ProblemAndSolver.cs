@@ -262,9 +262,9 @@ namespace TSP
             uint n = (uint)Cities.Length;
             uint populationSize = 1 + (uint)(Math.Sqrt(1 + 8 * n) / 2);
 
-            List<ArrayList> routes = initializePopulation(n);
+            PriorityQueue queue = new PriorityQueue(n);
 
-            PriorityQueue queue = evaluate(routes);
+            initializePopulation(n, queue);
 
             for (int cycle = 0; cycle < timesToRun; ++cycle)
             {
@@ -278,22 +278,15 @@ namespace TSP
             }
         }
 
-        private List<ArrayList> initializePopulation(uint problemSize)
+        private void initializePopulation(uint problemSize, PriorityQueue q)
         {
-            //something like this?
-            //List<ArrayList> population = new List<ArrayList>();
-            //for (int i = 0; i < problemSize; i++)
-            //{
-            //    population.Add(getRandomRoute().Route);
-            //}
-            //return population;
+            //something like this
+            for (int i = 0; i < problemSize; i++)
+            {
+                q.push(getRandomRoute());
+            }
 
-            return new List<ArrayList>();
-        }
-
-        private PriorityQueue evaluate(List<ArrayList> routes)
-        {
-            return new PriorityQueue((uint)routes.Count);
+            //return new List<ArrayList>();
         }
 
         private TSPSolution[] selection(PriorityQueue queue, uint populationSize)
