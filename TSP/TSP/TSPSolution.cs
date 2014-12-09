@@ -49,6 +49,10 @@ namespace TSP
             for (x = 0; x < Route.Count - 1; x++)
             {
                 here = Route[x] as City;
+                if (here.costToGetTo(Route[x + 1] as City) == 0)
+                {
+                    return Double.PositiveInfinity;
+                }
                 cost += here.costToGetTo(Route[x + 1] as City);
             }
 

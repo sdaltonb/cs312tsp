@@ -286,18 +286,14 @@ namespace TSP
 
         private void initializePopulation(uint problemSize, PriorityQueue q)
         {
-            //something like this
             for (int i = 0; i < problemSize; i++)
             {
                 q.push(getRandomRoute());
             }
-
-            //return new List<ArrayList>();
         }
 
         private TSPSolution[] selection(PriorityQueue queue, uint populationSize)
         {
-            Random r = new Random();
             double probability = 1 - 1 / populationSize;
             TSPSolution[] solutions = new TSPSolution[populationSize];
             int index = 0;
@@ -313,7 +309,7 @@ namespace TSP
                 }
                 else
                 {
-                    if (r.NextDouble() < probability)
+                    if (rnd.NextDouble() < probability)
                     {
                         solutions[index++] = queue.pop();
                     }
@@ -324,8 +320,6 @@ namespace TSP
 
         private void crossover(TSPSolution[] parents, PriorityQueue queue)
         {
-            Random rand = new Random();
-
             //20% mutation rate - we can change this to whatever we want
             int probabilityTotal = 100;
             int mutationRate = 20;
@@ -337,24 +331,41 @@ namespace TSP
                 {
                     //cross i and j
                     //random number that splits at least one city for crossover
-                    int split = rand.Next(Cities.Length - 2) + 1;
+                    int split = rnd.Next(Cities.Length - 2) + 1;
 
-                    ArrayList child1 = new ArrayList(parents[i].Route.GetRange(0, split));
-                    child1.AddRange(parents[j].Route.GetRange(split, Cities.Length - split));
-                    if (rand.Next(probabilityTotal) < mutationRate) {
-                        mutate(child1, rand);
+                    //ArrayList child1 = new ArrayList(parents[i].Route.GetRange(0, split));
+                    //child1.AddRange(parents[j].Route.GetRange(split, Cities.Length - split));
+
+                    ArrayList child1 = PMX(parents[i].Route, parents[j].Route, split);
+
+                    if (rnd.Next(probabilityTotal) < mutationRate) {
+                        mutate(child1, rnd);
                     }
                     queue.push(new TSPSolution(child1));
 
-                    ArrayList child2 = new ArrayList(parents[j].Route.GetRange(0, split));
-                    child2.AddRange(parents[i].Route.GetRange(split, Cities.Length - split));
-                    if (rand.Next(probabilityTotal) < mutationRate)
+                    //ArrayList child2 = new ArrayList(parents[j].Route.GetRange(0, split));
+                    //child2.AddRange(parents[i].Route.GetRange(split, Cities.Length - split));
+
+                    ArrayList child2 = PMX(parents[j].Route, parents[i].Route, split);
+                    
+                    if (rnd.Next(probabilityTotal) < mutationRate)
                     {
-                        mutate(child2, rand);
+                        mutate(child2, rnd);
                     }
                     queue.push(new TSPSolution(child2));
                 }
             }
+        }
+
+        private ArrayList PMX(ArrayList parent1, ArrayList parent2, int split)
+        {
+            ArrayList child = new ArrayList(parent1);
+            for (int i = 0; i < split; i++)
+            {
+                child[child.IndexOf(parent2[i])] = child[i];
+                child[i] = parent2[i];
+            }
+            return child;
         }
 
         private void mutate(ArrayList child, Random rand)
@@ -408,48 +419,6 @@ namespace TSP
 
         public void random()
         {
-            //List<Node> nodes = new List<Node>();
-            //foreach (City city in Cities)
-            //{
-            //    nodes.Add(new Node(city));
-            //}
-
-            //Route = new ArrayList();
-            //Node n = nodes[0];
-
-            //nodes.Remove(n);
-            //Route.Add(n.getCity());
-            //bool invalid = true;
-            //while (invalid)
-            //{
-            //    while (Route.Count < Cities.Length)
-            //    {
-            //        n.visit();
-            //        int i = new Random().Next(nodes.Count);
-            //        n = nodes[i];
-            //        Route.Add(n.getCity());
-            //        nodes.Remove(n);
-            //    }
-            //    // call this the best solution so far.  bssf is the route that will be drawn by the Draw method. 
-            //    bssf = new TSPSolution(Route);
-            //    if (bssf.costOfRoute() < Double.MaxValue)
-            //    {
-            //        invalid = false;
-            //    }
-            //    else
-            //    {
-            //        nodes = new List<Node>();
-            //        foreach (City city in Cities)
-            //        {
-            //            nodes.Add(new Node(city));
-            //        }
-            //        Route = new ArrayList();
-            //        Route.Add(n.getCity());
-            //        n = nodes[0];
-            //        nodes.Remove(n);
-            //    }
-            //}
-
             bssf = getRandomRoute();
 
             // update the cost of the tour. 
@@ -458,13 +427,11 @@ namespace TSP
             Program.MainForm.Invalidate();
         }
 
-        //I'm thinking we can call this in the random method and in initializePopulation to avoid code duplication
         private TSPSolution getRandomRoute()
         {
             TSPSolution randomRoute;
             List<Node> nodes;
             Node n;
-            Random rand = new Random();
             bool invalid = true;
             do
             {
@@ -480,7 +447,7 @@ namespace TSP
                 while (Route.Count < Cities.Length)
                 {
                     n.visit();
-                    int i = rand.Next(nodes.Count);
+                    int i = rnd.Next(nodes.Count);
                     n = nodes[i];
                     Route.Add(n.getCity());
                     nodes.Remove(n);
