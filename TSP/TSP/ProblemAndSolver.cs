@@ -259,13 +259,13 @@ namespace TSP
         public void genetic()
         {
             uint timesToRun = 4000;
-            uint n = (uint)Cities.Length;
-            uint populationSize = 1 + (uint)(Math.Sqrt(1 + 8 * n) / 2);
+            uint n = 2*(uint)Cities.Length;
+            uint populationSize = (uint)((1 + Math.Sqrt(1 + 4 * n)) / 2);
 
             PriorityQueue queue = new PriorityQueue(n);
 
             initializePopulation(n, queue);
-
+            bssf = queue.peek();
             for (int cycle = 0; cycle < timesToRun; ++cycle)
             {
                 TSPSolution[] parents = selection(queue, populationSize);
@@ -274,8 +274,14 @@ namespace TSP
 
                 crossover(parents, queue);
 
-                compare();
+                if (bssf.getLength() > queue.peek().getLength())
+                    bssf = queue.peek();
+                //compare();
             }
+
+            Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
+            // do a refresh. 
+            Program.MainForm.Invalidate();
         }
 
         private void initializePopulation(uint problemSize, PriorityQueue q)
