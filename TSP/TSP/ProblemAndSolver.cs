@@ -401,36 +401,14 @@ namespace TSP
 
         public void greedy()
         {
-            /*List<Node> nodes = new List<Node>();
-            foreach (City city in Cities)
-            {
-                nodes.Add(new Node(city));
-            }
-
-            Route = new ArrayList();
-            Node n = nodes[0];
-
-            while (Route.Count < Cities.Length)
-            {
-                Route.Add(n.getCity());
-                n.visit();
-                double max = Double.MaxValue;
-                Node temp = null;
-                foreach (Node node in nodes)
-                {
-                    if (!node.isVisited() && n.getCity().costToGetTo(node.getCity()) < max)
-                    {
-                        temp = node;
-                        max = n.getCity().costToGetTo(node.getCity());
-                    }
-                }
-                n = temp;
-            }
-
-            // call this the best solution so far.  bssf is the route that will be drawn by the Draw method. 
-            bssf = new TSPSolution(Route);*/
-
             bssf = getGreedyRoute(0);
+            for (int i = 1; i < Cities.Length; i++)
+            {
+                TSPSolution t = getGreedyRoute(i);
+                if (t.getLength() < bssf.getLength())
+                    bssf = t;
+            }
+                
             // update the cost of the tour. 
             Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
             // do a refresh. 
