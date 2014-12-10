@@ -61,6 +61,10 @@ namespace TSP
 
             if (solutions[(int)index].getLength() < solutions[(int)(index - 1) / 2].getLength())
             {
+                TSPSolution temp = solutions[(uint)index];
+                solutions[(uint)index] = solutions[(uint)(index - 1) / 2];
+                solutions[(uint)(index - 1) / 2] = temp;
+
                 percolateUp((index - 1)/ 2);
             }
         }

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.Timers;
+using System.Diagnostics;
 
 namespace TSP
 {
@@ -258,15 +260,19 @@ namespace TSP
 
         public void genetic()
         {
-            uint timesToRun = 4000;
+            Stopwatch timer = new Stopwatch();
+            uint timesToRun = 32000;
             uint n = 2*(uint)Cities.Length;
-            uint populationSize = (uint)((1 + Math.Sqrt(1 + 4 * n)) / 2);
-
+            uint populationSize = (uint)Math.Floor(Math.Sqrt(n));
+           
             PriorityQueue queue = new PriorityQueue(n);
+
+            timer.Start();
 
             initializePopulation(n, queue);
             bssf = queue.peek();
-            for (int cycle = 0; cycle < timesToRun; ++cycle)
+            while (timer.Elapsed < TimeSpan.FromSeconds(200))
+            //for (int cycle = 0; cycle < timesToRun; ++cycle)
             {
                 TSPSolution[] parents = selection(queue, populationSize);
 
@@ -324,6 +330,11 @@ namespace TSP
             int probabilityTotal = 100;
             int mutationRate = 20;
 
+            foreach (TSPSolution solution in parents)
+            {
+                queue.push(solution);
+            }
+
             //loop through each combination of parents
             for (int i = 0; i < parents.Length - 1; i++)
             {
@@ -355,6 +366,8 @@ namespace TSP
                     queue.push(new TSPSolution(child2));
                 }
             }
+
+        
         }
 
         private ArrayList PMX(ArrayList parent1, ArrayList parent2, int split)
