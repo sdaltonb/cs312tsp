@@ -352,7 +352,7 @@ namespace TSP
                     //ArrayList child1 = new ArrayList(parents[i].Route.GetRange(0, split));
                     //child1.AddRange(parents[j].Route.GetRange(split, Cities.Length - split));
 
-                    ArrayList child1 = PMX(parents[i].Route, parents[j].Route, split);
+                    ArrayList child1 = Meiosis(parents[i].Route, parents[j].Route, split);// PMX(parents[i].Route, parents[j].Route, split);
 
                     if (rnd.Next(probabilityTotal) < mutationRate) {
                         mutate(child1, rnd);
@@ -362,7 +362,7 @@ namespace TSP
                     //ArrayList child2 = new ArrayList(parents[j].Route.GetRange(0, split));
                     //child2.AddRange(parents[i].Route.GetRange(split, Cities.Length - split));
 
-                    ArrayList child2 = PMX(parents[j].Route, parents[i].Route, split);
+                    ArrayList child2 = Meiosis(parents[j].Route, parents[i].Route, split);// PMX(parents[j].Route, parents[i].Route, split);
                     
                     if (rnd.Next(probabilityTotal) < mutationRate)
                     {
@@ -371,8 +371,62 @@ namespace TSP
                     queue.push(new TSPSolution(child2));
                 }
             }
+        }
 
-        
+        private ArrayList Meiosis(ArrayList parent1, ArrayList parent2, int split)
+        {
+            ArrayList child = new ArrayList(parent1.Count);
+           
+            for (uint i = 0; i < split; ++i)
+            {
+                child.Add(parent1[(int)i]);
+            }
+
+            SortedSet<City> citiesToVisit = new SortedSet<City>(new CityComparer());
+
+            for (uint i = (uint)split; i < parent1.Count; ++i)
+            {
+                citiesToVisit.Add(parent1[(int)i] as City);
+            }
+
+            for (uint i = 0; i < parent2.Count; ++i)
+            {
+                if (child.Count == Cities.Length)
+                {
+                    break;
+                }
+
+                if (citiesToVisit.Contains(parent2[(int)i] as City))
+                {
+                    child.Add(parent2[(int)i]);
+                }
+            }
+
+            return child;
+        }
+
+        public class CityComparer : IComparer<City>
+        {
+            public int Compare(City x, City y)
+            {
+                if (x.X < y.X)
+                {
+                    return -1;
+                }
+                else if (x.X > y.X)
+                {
+                    return 1;
+                }
+                if (x.Y < y.Y)
+                {
+                    return -1;
+                } 
+                else if (x.Y > y.Y)
+                {
+                    return 1;
+                }
+                return 0;
+            }
         }
 
         private ArrayList PMX(ArrayList parent1, ArrayList parent2, int split)
