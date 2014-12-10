@@ -292,7 +292,12 @@ namespace TSP
 
         private void initializePopulation(uint problemSize, PriorityQueue q)
         {
-            for (int i = 0; i < problemSize; i++)
+            for (int i = 0; i < Cities.Length; i++)
+            {
+                q.push(getGreedyRoute(i));
+            }
+
+            for (; q.getSize() < problemSize;)
             {
                 q.push(getRandomRoute());
             }
@@ -396,7 +401,7 @@ namespace TSP
 
         public void greedy()
         {
-            List<Node> nodes = new List<Node>();
+            /*List<Node> nodes = new List<Node>();
             foreach (City city in Cities)
             {
                 nodes.Add(new Node(city));
@@ -423,11 +428,44 @@ namespace TSP
             }
 
             // call this the best solution so far.  bssf is the route that will be drawn by the Draw method. 
-            bssf = new TSPSolution(Route);
+            bssf = new TSPSolution(Route);*/
+
+            bssf = getGreedyRoute(0);
             // update the cost of the tour. 
             Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
             // do a refresh. 
             Program.MainForm.Invalidate();
+        }
+
+        public TSPSolution getGreedyRoute(int start)
+        {
+            start = start % Cities.Length;
+            List<Node> nodes = new List<Node>();
+            foreach (City city in Cities)
+            {
+                nodes.Add(new Node(city));
+            }
+
+            Route = new ArrayList();
+            Node n = nodes[start];
+
+            while (Route.Count < Cities.Length)
+            {
+                Route.Add(n.getCity());
+                n.visit();
+                double max = Double.MaxValue;
+                Node temp = null;
+                foreach (Node node in nodes)
+                {
+                    if (!node.isVisited() && n.getCity().costToGetTo(node.getCity()) < max)
+                    {
+                        temp = node;
+                        max = n.getCity().costToGetTo(node.getCity());
+                    }
+                }
+                n = temp;
+            }
+            return new TSPSolution(Route);
         }
 
         public void random()
