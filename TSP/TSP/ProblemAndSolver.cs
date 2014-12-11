@@ -261,7 +261,7 @@ namespace TSP
         public void genetic()
         {
             Stopwatch timer = new Stopwatch();
-            uint timesToRun = 32000;
+            uint duplicatedBssf = 0;
             uint n = 2*(uint)Cities.Length;
             uint populationSize = (uint)Math.Floor(Math.Sqrt(n));
            
@@ -287,10 +287,44 @@ namespace TSP
                 }
                 else
                 {
+                    ++duplicatedBssf;
                     Console.WriteLine("OLD: " + bssf.getLength());
                 }
 
-                    //compare();
+                if (duplicatedBssf > 1000)
+                {
+                    uint solutionsToKeep = populationSize / 5;
+                    uint greedySolutionsToUse = populationSize / 10;
+
+                    TSPSolution[] bestSolutions = new TSPSolution[solutionsToKeep];
+
+                    for (uint i = 0; i < solutionsToKeep; ++i)
+                    {
+                        bestSolutions[i] = queue.pop();
+                    }
+
+
+                    queue.clear();
+
+                    queue.push(bssf);
+
+                    for (uint i = 0; i < solutionsToKeep; ++i)
+                    {
+                        queue.push(bestSolutions[i]);
+                    }
+
+                    for (uint i = 0; i < solutionsToKeep; ++i)
+                    {
+                        queue.push(getGreedyRoute(rnd.Next(Cities.Length)));
+                    }
+
+                    for (uint i = 0; i < Cities.Length - 5; ++i)
+                    {
+                        queue.push(getRandomRoute());
+                    }
+
+                    duplicatedBssf = 0;
+                }
             }
 
             Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
@@ -313,7 +347,7 @@ namespace TSP
 
         private TSPSolution[] selection(PriorityQueue queue, uint populationSize)
         {
-            double probability = (1 - 1 / populationSize);
+            double probability = (1 - 1 / populationSize) / 1.5;
             TSPSolution[] solutions = new TSPSolution[populationSize];
             int index = 0;
             while (index < populationSize)
@@ -345,7 +379,7 @@ namespace TSP
         {
             //20% mutation rate - we can change this to whatever we want
             int probabilityTotal = 100;
-            int mutationRate = 20;
+            int mutationRate = 90;
 
             foreach (TSPSolution solution in parents)
             {
@@ -361,20 +395,14 @@ namespace TSP
                     //random number that splits at least one city for crossover
                     int split = rnd.Next(Cities.Length - 2) + 1;
 
-                    //ArrayList child1 = new ArrayList(parents[i].Route.GetRange(0, split));
-                    //child1.AddRange(parents[j].Route.GetRange(split, Cities.Length - split));
-
-                    ArrayList child1 = Meiosis(parents[i].Route, parents[j].Route, split);// PMX(parents[i].Route, parents[j].Route, split);
+                    ArrayList child1 = /*Meiosis(parents[i].Route, parents[j].Route, split);// */PMX(parents[i].Route, parents[j].Route, split);
 
                     if (rnd.Next(probabilityTotal) < mutationRate) {
                         mutate(child1, rnd);
                     }
                     queue.push(new TSPSolution(child1));
 
-                    //ArrayList child2 = new ArrayList(parents[j].Route.GetRange(0, split));
-                    //child2.AddRange(parents[i].Route.GetRange(split, Cities.Length - split));
-
-                    ArrayList child2 = Meiosis(parents[j].Route, parents[i].Route, split);// PMX(parents[j].Route, parents[i].Route, split);
+                    ArrayList child2 = /*Meiosis(parents[j].Route, parents[i].Route, split);// */PMX(parents[j].Route, parents[i].Route, split);
                     
                     if (rnd.Next(probabilityTotal) < mutationRate)
                     {
