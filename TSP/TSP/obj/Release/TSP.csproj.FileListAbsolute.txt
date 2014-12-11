@@ -1,0 +1,9 @@
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\bin\Release\TSP.exe.config
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\bin\Release\TSP.exe
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\bin\Release\TSP.pdb
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\obj\Release\TSP.mainform.resources
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\obj\Release\TSP.Properties.Resources.resources
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\obj\Release\TSP.csproj.GenerateResource.Cache
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\obj\Release\TSP.exe
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\obj\Release\TSP.pdb
+C:\Users\sdaltonb\Source\Repos\cs312tsp\TSP\TSP\obj\Release\TSP.csprojResolveAssemblyReference.cache

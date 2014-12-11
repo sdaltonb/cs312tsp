@@ -271,7 +271,7 @@ namespace TSP
 
             initializePopulation(n, queue);
             bssf = queue.peek();
-            while (timer.Elapsed < TimeSpan.FromSeconds(200))
+            while (timer.Elapsed < TimeSpan.FromSeconds(600))
             //for (int cycle = 0; cycle < timesToRun; ++cycle)
             {
                 TSPSolution[] parents = selection(queue, populationSize);
@@ -281,8 +281,16 @@ namespace TSP
                 crossover(parents, queue);
 
                 if (bssf.getLength() > queue.peek().getLength())
+                {
                     bssf = queue.peek();
-                //compare();
+                    Console.WriteLine("NEW: " + bssf.getLength());
+                }
+                else
+                {
+                    Console.WriteLine("OLD: " + bssf.getLength());
+                }
+
+                    //compare();
             }
 
             Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
@@ -305,7 +313,7 @@ namespace TSP
 
         private TSPSolution[] selection(PriorityQueue queue, uint populationSize)
         {
-            double probability = 1 - 1 / populationSize;
+            double probability = (1 - 1 / populationSize);
             TSPSolution[] solutions = new TSPSolution[populationSize];
             int index = 0;
             while (index < populationSize)
@@ -323,6 +331,10 @@ namespace TSP
                     if (rnd.NextDouble() < probability)
                     {
                         solutions[index++] = queue.pop();
+                    }
+                    else
+                    {
+                        queue.pop();
                     }
                 }
             }
